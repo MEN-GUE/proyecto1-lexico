@@ -1,0 +1,29 @@
+digraph AFD {
+	rankdir=LR;
+	node [shape=circle, fontname="Arial"];
+	node4 [shape=doublecircle];
+	node5 [shape=doublecircle];
+	node6 [shape=doublecircle];
+	node7 [shape=doublecircle];
+	node8 [shape=doublecircle];
+	inicio [shape=point];
+	inicio -> node0;
+	node0 -> node1 [label="a"];
+	node0 -> node2 [label="b"];
+	node1 -> node1 [label="a"];
+	node1 -> node3 [label="b"];
+	node2 -> node1 [label="a"];
+	node2 -> node2 [label="b"];
+	node3 -> node1 [label="a"];
+	node3 -> node4 [label="b"];
+	node4 -> node5 [label="a"];
+	node4 -> node6 [label="b"];
+	node5 -> node5 [label="a"];
+	node5 -> node7 [label="b"];
+	node6 -> node5 [label="a"];
+	node6 -> node6 [label="b"];
+	node7 -> node5 [label="a"];
+	node7 -> node8 [label="b"];
+	node8 -> node5 [label="a"];
+	node8 -> node6 [label="b"];
+}

@@ -7,10 +7,10 @@ import (
 	"os/exec"
 	"strings"
 
+	"proyecto1/internal/afd"
 	"proyecto1/internal/afn"
 	"proyecto1/internal/ast"
 	"proyecto1/internal/shuntingyard"
-	// "proyecto1/internal/afd" // TODO: Descomentar al implementar Subconjuntos
 )
 
 func procesarLinea(linea string, index int) {
@@ -27,7 +27,7 @@ func procesarLinea(linea string, index int) {
 	fmt.Printf("Expresión Regular (r): %s\n", regex)
 	fmt.Printf("Cadena a evaluar (w): %s\n", cadena)
 
-	// 1. Conversión Infix a Postfix (Shunting Yard)
+	// 1. Conversión Infix a Postfix (Shunting Yard)[cite: 6]
 	tokens := shuntingyard.Tokenizar(regex)
 	tokensSimples := shuntingyard.SimplificarExtensiones(tokens)
 	tokensConConcat := shuntingyard.AgregarConcatenacionExplicita(tokensSimples)
@@ -36,32 +36,38 @@ func procesarLinea(linea string, index int) {
 	// 2. Construcción del Árbol Sintáctico Abstracto
 	raizAST := ast.ConstruirAST(postfix)
 
-	// 3. Construcción del AFN (Algoritmo de Thompson)
+	// 3. Construcción y Simulación del AFN (Algoritmo de Thompson)[cite: 6]
 	afn.ReiniciarContador()
 	automataNoDeterminista := afn.ConstruirThompson(raizAST)
-
-	// 4. Graficación del AFN
 	graficarAFN(automataNoDeterminista, index)
-
-	// 5. Simulación del AFN
+	
 	resultadoAFN := afn.Simular(automataNoDeterminista, cadena)
 	imprimirResultado("AFN", cadena, resultadoAFN)
 
 	// ====================================================================
-	// FASE 2: CONSTRUCCIÓN DE SUBCONJUNTOS Y MINIMIZACIÓN
+	// FASE 2: CONSTRUCCIÓN DE SUBCONJUNTOS, GRAFICACIÓN Y SIMULACIÓN
 	// ====================================================================
 	
-	// Extraemos el alfabeto antes del Shunting Yard (para evitar capturar la '~')
 	alfabeto := afd.ObtenerAlfabeto(regex)
-	fmt.Printf("Alfabeto detectado: %v\n", alfabeto)
 	
 	// Generación de AFD con Subconjuntos[cite: 6]
 	automataDeterminista := afd.ConstruirSubconjuntos(automataNoDeterminista, alfabeto)
-	fmt.Printf("✅ AFD generado exitosamente mediante Subconjuntos. Estados totales: %d\n", len(automataDeterminista.Estados))
+	
+	// Graficación del AFD generado[cite: 6]
+	graficarAFD(automataDeterminista, index, "afd")
+	
+	// Simulación determinista de la cadena w[cite: 6]
+	resultadoAFD := afd.Simular(automataDeterminista, cadena)
+	imprimirResultado("AFD", cadena, resultadoAFD)
 
-	// TODO: graficarAFD(automataDeterminista, index, "afd")
-	// TODO: resultadoAFD := afd.Simular(automataDeterminista, cadena)
-	// TODO: imprimirResultado("AFD", cadena, resultadoAFD)
+	// ====================================================================
+	// FASE 3: MINIMIZACIÓN DE AFD
+	// ====================================================================
+	// Minimización de AFD[cite: 6]
+	automataMinimizado := afd.Minimizar(automataDeterminista)
+	graficarAFD(automataMinimizado, index, "min")
+	resultadoMin := afd.Simular(automataMinimizado, cadena)
+	imprimirResultado("AFD Minimizado", cadena, resultadoMin)
 }
 
 func graficarAFN(automata *afn.AFN, index int) {
@@ -70,17 +76,27 @@ func graficarAFN(automata *afn.AFN, index int) {
 	pngFilename := fmt.Sprintf("afn_%d.png", index)
 
 	os.WriteFile(dotFilename, []byte(dotSource), 0644)
-	err := exec.Command("dot", "-Tpng", dotFilename, "-o", pngFilename).Run()
-	if err != nil {
-		fmt.Printf("Error al generar la imagen %s. Verifica tu instalación de Graphviz.\n", pngFilename)
-		return
-	}
-	
-	fmt.Printf("✅ AFN generado exitosamente en: %s\n", pngFilename)
+	exec.Command("dot", "-Tpng", dotFilename, "-o", pngFilename).Run()
 	exec.Command("xdg-open", pngFilename).Start()
 }
 
-// Función auxiliar para imprimir las métricas de aceptación requeridas[cite: 6]
+// graficarAFD centraliza la renderización de grafos para el AFD normal y el minimizado[cite: 6]
+func graficarAFD(automata *afd.AFD, index int, prefijo string) {
+	dotSource := afd.GenerarDOT(automata)
+	dotFilename := fmt.Sprintf("%s_%d.dot", prefijo, index)
+	pngFilename := fmt.Sprintf("%s_%d.png", prefijo, index)
+
+	os.WriteFile(dotFilename, []byte(dotSource), 0644)
+	err := exec.Command("dot", "-Tpng", dotFilename, "-o", pngFilename).Run()
+	if err != nil {
+		fmt.Printf("Error al generar la imagen %s.\n", pngFilename)
+		return
+	}
+	
+	fmt.Printf("✅ %s generado exitosamente en: %s\n", strings.ToUpper(prefijo), pngFilename)
+	exec.Command("xdg-open", pngFilename).Start()
+}
+
 func imprimirResultado(tipo string, cadena string, aceptada bool) {
 	if aceptada {
 		fmt.Printf("Simulación %s: sí, '%s' pertenece a L(r)\n", tipo, cadena)
@@ -94,7 +110,7 @@ func main() {
 
 	archivo, err := os.Open("expresiones.txt")
 	if err != nil {
-		fmt.Println("Error: No se encontró 'expresiones.txt' en la raíz del proyecto.")
+		fmt.Println("Error: No se encontró 'expresiones.txt'.")
 		return
 	}
 	defer archivo.Close()
@@ -108,9 +124,5 @@ func main() {
 			procesarLinea(linea, index)
 			index++
 		}
-	}
-
-	if err := escaner.Err(); err != nil {
-		fmt.Println("Error de lectura durante el escaneo del archivo:", err)
 	}
 }

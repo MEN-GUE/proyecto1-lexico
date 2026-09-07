@@ -1,0 +1,34 @@
+digraph AFN {
+	rankdir=LR;
+	node [shape=circle, fontname="Arial"];
+	node21 [shape=doublecircle];
+	inicio [shape=point];
+	inicio -> node6;
+	node6 -> node4 [label="E"];
+	node6 -> node7 [label="E"];
+	node4 -> node0 [label="E"];
+	node4 -> node2 [label="E"];
+	node7 -> node8 [label="E"];
+	node0 -> node1 [label="a"];
+	node2 -> node3 [label="b"];
+	node8 -> node9 [label="a"];
+	node1 -> node5 [label="E"];
+	node3 -> node5 [label="E"];
+	node9 -> node10 [label="E"];
+	node5 -> node4 [label="E"];
+	node5 -> node7 [label="E"];
+	node10 -> node11 [label="b"];
+	node11 -> node12 [label="E"];
+	node12 -> node13 [label="b"];
+	node13 -> node20 [label="E"];
+	node20 -> node18 [label="E"];
+	node20 -> node21 [label="E"];
+	node18 -> node14 [label="E"];
+	node18 -> node16 [label="E"];
+	node14 -> node15 [label="a"];
+	node16 -> node17 [label="b"];
+	node15 -> node19 [label="E"];
+	node17 -> node19 [label="E"];
+	node19 -> node18 [label="E"];
+	node19 -> node21 [label="E"];
+}
