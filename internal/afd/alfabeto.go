@@ -2,17 +2,18 @@ package afd
 
 import "strings"
 
-// ObtenerAlfabeto extrae los símbolos únicos de la expresión regular
+// ObtenerAlfabeto extrae de forma segura los símbolos únicos de la expresión regular
 func ObtenerAlfabeto(regex string) []string {
 	alfabetoMap := make(map[string]bool)
 	var alfabeto []string
 	
-	// Operadores reservados de nuestra sintaxis, incluyendo 'E' como épsilon
-	operadores := "|*+?~()E"
+	// El símbolo '#' se reserva a nivel de sistema para representar transiciones épsilon[cite: 7].
+	// Los operadores estructurales de la notación postfix e infix quedan excluidos del mapa.
+	operadores := "|*+?~()#"
 
 	for _, char := range regex {
 		simbolo := string(char)
-		// Ignoramos operadores y espacios
+		// La validación ignora tanto los operadores lógicos como los espacios en blanco
 		if !strings.Contains(operadores, simbolo) && simbolo != " " {
 			if !alfabetoMap[simbolo] {
 				alfabetoMap[simbolo] = true

@@ -17,8 +17,8 @@ func CerraduraEpsilon(estados []*Estado) []*Estado {
 		pila = pila[:len(pila)-1]
 
 		for _, t := range actual.Transiciones {
-			// Adaptación para el Proyecto 1: Evaluación de transiciones épsilon verificando contra el caracter designado 'E'[cite: 6].
-			if t.Simbolo == "E" {
+			// Evaluación explícita del salto no determinista basado en el símbolo designado[cite: 7].
+			if t.Simbolo == "#" {
 				if !visitados[t.Destino.ID] {
 					visitados[t.Destino.ID] = true
 					resultado = append(resultado, t.Destino)

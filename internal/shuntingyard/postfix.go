@@ -62,8 +62,8 @@ func SimplificarExtensiones(tokens []string) []string {
 			res = res[:inicio]
 			res = append(res, "(")
 			res = append(res, op...)
-			// Adaptación para el Proyecto 1: Se designa explícitamente el caracter 'E' para representar a epsilon, cumpliendo con la restricción de evitar caracteres problemáticos[cite: 6].
-			res = append(res, "|", "E", ")")
+			// Se inyecta el símbolo designado '#' de longitud 1 para la alternativa vacía[cite: 7].
+			res = append(res, "|", "#", ")")
 		} else {
 			res = append(res, t)
 		}
