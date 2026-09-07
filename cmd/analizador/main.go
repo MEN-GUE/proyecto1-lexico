@@ -51,17 +51,17 @@ func procesarLinea(linea string, index int) {
 	// FASE 2: CONSTRUCCIÓN DE SUBCONJUNTOS Y MINIMIZACIÓN
 	// ====================================================================
 	
-	// TODO: Generación de AFD con Subconjuntos
-	// automataDeterminista := afd.ConstruirSubconjuntos(automataNoDeterminista)
-	// graficarAFD(automataDeterminista, index, "afd")
-	// resultadoAFD := afd.Simular(automataDeterminista, cadena)
-	// imprimirResultado("AFD", cadena, resultadoAFD)
+	// Extraemos el alfabeto antes del Shunting Yard (para evitar capturar la '~')
+	alfabeto := afd.ObtenerAlfabeto(regex)
+	fmt.Printf("Alfabeto detectado: %v\n", alfabeto)
+	
+	// Generación de AFD con Subconjuntos[cite: 6]
+	automataDeterminista := afd.ConstruirSubconjuntos(automataNoDeterminista, alfabeto)
+	fmt.Printf("✅ AFD generado exitosamente mediante Subconjuntos. Estados totales: %d\n", len(automataDeterminista.Estados))
 
-	// TODO: Minimización de AFD
-	// automataMinimizado := afd.Minimizar(automataDeterminista)
-	// graficarAFD(automataMinimizado, index, "min")
-	// resultadoMin := afd.Simular(automataMinimizado, cadena)
-	// imprimirResultado("AFD Minimizado", cadena, resultadoMin)
+	// TODO: graficarAFD(automataDeterminista, index, "afd")
+	// TODO: resultadoAFD := afd.Simular(automataDeterminista, cadena)
+	// TODO: imprimirResultado("AFD", cadena, resultadoAFD)
 }
 
 func graficarAFN(automata *afn.AFN, index int) {
