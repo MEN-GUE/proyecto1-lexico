@@ -1,11 +1,14 @@
 # Analizador Léxico Inicial - Verificador de Lenguajes Regulares
 
-Este repositorio privado contiene el desarrollo arquitectónico del **Proyecto No. 1** del curso, construido en lenguaje Go. Su finalidad principal consiste en la implementación computacional de algoritmos básicos orientados a la síntesis y transformación de autómatas finitos a partir de expresiones regulares complejas.
+Este repositorio construido en lenguaje Go tiene cómo finalidad principal consiste  la implementación computacional de algoritmos básicos orientados a la síntesis y transformación de autómatas finitos a partir de expresiones regulares complejas.
 
 El sistema ha sido estructurado para validar la aceptación matemática de cadenas finitas en lenguajes regulares mediante la instanciación de autómatas deterministas y no deterministas.
 
 ## Autor:
 *   **Juan Fernando Menéndez Guerra**
+
+## Vídeo demostrativo:
+### [https://youtu.be/atC0lBFwQrs](https://youtu.be/atC0lBFwQrs)
 
 
 ## Definiciones y Convenciones del Entorno
